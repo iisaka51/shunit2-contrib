@@ -20,4 +20,11 @@ END_BANNER() {
     echo "## ---------------------------------- "
 }
 
+test_sample() {
+    BANNER "first example"
 
+    MODE=$( get_file_mode ${_HOME}/.ssh )
+    assertEquals "authkey_dir mode mismatch" "0700" "${MODE}"
+}
+
+. shunit2

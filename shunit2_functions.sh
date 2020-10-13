@@ -58,6 +58,7 @@ is_executable() {
 # ----------------------------------
 # Colors
 # ----------------------------------
+# See Also: https://en.wikipedia.org/wiki/ANSI_escape_code
 
 ESC=$(printf '\033')
 RED="${ESC}[0;31m"
