@@ -58,6 +58,7 @@ is_executable() {
 # ----------------------------------
 # Colors
 # ----------------------------------
+
 ESC=$(printf '\033')
 RED="${ESC}[0;31m"
 GREEN="${ESC}[0;32m"
@@ -78,14 +79,15 @@ NOCOLOR="${ESC}[0m"
 
 ECHO() {
 # Usage:
-#    ECHO $RED "This is ERROR"
 #    ECHO "" "This is normal string"
 #    ECHO -- "This is normal string"
+#    ECHO $RED "This is ERROR"
+#    ECHO $YOUR_CUSTOM_COLOR "This is your colored string"
 
-    if [ "$1" == "--" -o "$1" == "" ] ; then
-        unset _COLOR ; shift
-    else
-        _COLOR=$1 ; shift
-    fi
+    case "$1" in
+    --|"") unset _COLOR ; shift ;;
+    *)     _COLOR=$1 ; shift
+    esac
+
     echo ${_COLOR} "$@" ${NOCOLOR}
 }
