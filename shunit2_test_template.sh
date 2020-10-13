@@ -1,12 +1,14 @@
 
 [ -f shunit2 ] || {
     BASEURL=https://raw.githubusercontent.com/iisaka51/shunit2/master
-    url -s -L  ${BASEURL}/shunit2 -o  shunit2
+    curl -s -L  ${BASEURL}/shunit2 -o  shunit2
 }
 [ -f shunit2_functions.sh ] || {
     BASEURL=https://raw.githubusercontent.com/iisaka51/shunit2-contrib/master
-    url -s -L  ${BASEURL}/shunit2_functions.sh -o  shunit2_functions.sh
+    curl -s -L  ${BASEURL}/shunit2_functions.sh -o  shunit2_functions.sh
 }
+
+. shunit2_functions.sh
 
 BANNER() {
     TEST_NUMBER=$(( TEST_NUMBER + 1 ))
