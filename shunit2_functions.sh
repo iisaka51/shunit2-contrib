@@ -60,35 +60,58 @@ is_executable() {
 # ----------------------------------
 # See Also: https://en.wikipedia.org/wiki/ANSI_escape_code
 
-ESC=$(printf '\033')
-RED="${ESC}[0;31m"
-GREEN="${ESC}[0;32m"
-ORANGE="${ESC}[0;33m"
-BLUE="${ESC}[0;34m"
-PURPLE="${ESC}[0;35m"
-CYAN="${ESC}[0;36m"
-LIGHTGRAY="${ESC}[0;37m"
-DARKGRAY="${ESC}[1;30m"
-LIGHTRED="${ESC}[1;31m"
-LIGHTGREEN="${ESC}[1;32m"
-YELLOW="${ESC}[1;33m"
-LIGHTBLUE="${ESC}[1;34m"
-LIGHTPURPLE="${ESC}[1;35m"
-LIGHTCYAN="${ESC}[1;36m"
-WHITE="${ESC}[1;37m"
-NOCOLOR="${ESC}[0m"
+# FG_RED "Failed"
+# echo "$(FG_RED)Failed$(_RESET)"
+# echo "$(FG_RED ERROR): error message here"
+# echo "$colored_text" | _UNCOLOR
 
-ECHO() {
-# Usage:
-#    ECHO "" "This is normal string"
-#    ECHO -- "This is normal string"
-#    ECHO $RED "This is ERROR"
-#    ECHO $YOUR_CUSTOM_COLOR "This is your colored string"
+[ "$TERM" = "unknown" ] && TERM=''
+_TERM=${TERM:-xterm-256color}
 
-    case "$1" in
-    --|"") unset _COLOR ; shift ;;
-    *)     _COLOR=$1 ; shift
-    esac
+_ECHO() {
+    if [ -z "$1" ] && [ ! -t 0 ]; then
+      cat </dev/stdin
+      tput -T$_TERM sgr0;
+    elif [ -n "$1" ] && [ ! "$1" = "+" ]; then
+      echo -n "$@"
+      tput -T$_TERM sgr0;
+    fi
+}
 
-    echo ${_COLOR} "$@" ${NOCOLOR}
+# Foreground color
+FG_BLACK() { tput -T$_TERM setaf 0; _ECHO "$@"; }
+FG_RED() { tput -T$_TERM setaf 1; _ECHO "$@"; }
+FG_GREEN() { tput -T$_TERM setaf 2; _ECHO "$@"; }
+FG_YELLOW() { tput -T$_TERM setaf 3; _ECHO "$@"; }
+FG_BLUE() { tput -T$_TERM setaf 4; _ECHO "$@"; }
+FG_MAGENTA() { tput -T$_TERM setaf 5; _ECHO "$@"; }
+FG_CYAN() { tput -T$_TERM setaf 6; _ECHO "$@"; }
+FG_WHITE() { tput -T$_TERM setaf 7; _ECHO "$@"; }
+
+# Background color
+BG_BLACK() { tput -T$_TERM setab 0; _ECHO "$@"; }
+BG_RED() { tput -T$_TERM setab 1; _ECHO "$@"; }
+BG_GREEN() { tput -T$_TERM setab 2; _ECHO "$@"; }
+BG_YELLOW() { tput -T$_TERM setab 3; _ECHO "$@"; }
+BG_BLUE() { tput -T$_TERM setab 4; _ECHO "$@"; }
+BG_MAGENTA() { tput -T$_TERM setab 5; _ECHO "$@"; }
+BG_CYAN() { tput -T$_TERM setab 6; _ECHO "$@"; }
+BG_WHITE() { tput -T$_TERM setab 7; _ECHO "$@"; }
+
+# Styles
+_BOLD() { tput -T$_TERM bold; _ECHO "$@"; }
+_UNDERLINE() { tput -T$_TERM smul; _ECHO "$@"; }
+_INVERSE() { tput -T$_TERM rev; _ECHO "$@"; }
+_DIM() { tput -T$_TERM dim; _ECHO "$@"; }
+
+# Reset
+_RESET() { tput -T$_TERM sgr0; }
+
+_UNCOLOR() {
+  # remove color codes from text
+  if [ -z "$1" ] && [ ! -t 0 ]; then
+    sed 's/\x1B\[[0-9;]*[a-zA-Z]//g;s/\x1B\x28\x42//g' </dev/stdin
+  else
+    sed 's/\x1B\[[0-9;]*[a-zA-Z]//g;s/\x1B\x28\x42//g' <<< "$@"
+  fi
 }

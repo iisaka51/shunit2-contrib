@@ -8,7 +8,14 @@
     curl -s -L  ${BASEURL}/shunit2_functions.sh -o  shunit2_functions.sh
 }
 
+[ -f shunit2_colors.sh ] || {
+    BASEURL=https://raw.githubusercontent.com/iisaka51/shunit2-contrib/master
+    curl -s -L  ${BASEURL}/shunit2_colors.sh -o  shunit2_colors.sh
+}
+
 . shunit2_functions.sh
+
+. shunit2_colors.sh
 
 BANNER() {
     TEST_NUMBER=$(( TEST_NUMBER + 1 ))
